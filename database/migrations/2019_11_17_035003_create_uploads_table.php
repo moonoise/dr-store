@@ -19,12 +19,10 @@ class CreateUploadsTable extends Migration
             $table->string('filename')->unique();
             $table->string('oldname');
             $table->string('newname');
-            $table->string('slug')->unique();
             $table->unsignedBigInteger('article_id');
             $table->timestamps();
-
             $table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
-            
+
         });
     }
 

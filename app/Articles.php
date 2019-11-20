@@ -4,13 +4,18 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Categories extends Model
+class Articles extends Model
 {
-    protected $fillable = ['title','overview','user_id'];
+    protected $fillable = ['title','body'];
 
     public function User()
     {
         $this->belongsTo(User::class);
+    }
+
+    public function Categories()
+    {
+        $this->belongsTo(Categories::class);
     }
 
     public function setTitleAttribute($value)
@@ -18,5 +23,6 @@ class Categories extends Model
         $this->attributes['title'] = $value;
         $this->attributes['slug'] = str_slug($value);
     }
+
 
 }

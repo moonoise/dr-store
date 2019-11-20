@@ -18,3 +18,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::resource('categories','CategoriesController')->except(['show','index','create']);
+
+Route::get('/categories','CategoriesController@index')->name('categories.index');
+
