@@ -1,5 +1,6 @@
 @php
-    $i =1;
+
+    $i = 0;
 @endphp
 @extends('layouts.app')
 
@@ -8,9 +9,30 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">หมวดหมู่</div>
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h5>หมวดหมู่</h5>
+                        <div class="ml-auto">
+                            <a href="{{ route('categories.create') }}" class="btn btn-sm btn-outline-info">เพิ่มหมวดหมู่</a>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-6"></div>
+                        <div class="col-6">
+                            <div class="float-right">
+                                <form action="{{ route('categories.search') }}" method="get" class="form-inline">
+                                    <div class="form-group mr-2 mb-2">
+                                    <input type="search" name="search" id="search" class="form-control" value="{{ $search ?? "" }}">
+                                            <button type="submit" class="btn btn-primary ml-1">Search</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
                  @include('layouts._messages')
                     <table class="table">
                         <thead>
@@ -21,10 +43,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($categories as $category)
+                            @forelse ($categories as $key => $category)
                                 <tr>
-                                    <td scope="row">{{$i++}}</td>
-                                    <td>{{ $category->title }}</td>
+                                    <td scope="row">{{ $categories->firstItem() + $key }}</td>
+                                    <td>
+                                    <a class="card-link" href="{{ route('categories.show', $category->id ) }}">
+                                        {{ str_limit($category->title,100,"...") }} </a></td>
                                     <td>
                                         <div class="buttom-float">
                                             <a href="{{ route('categories.edit', $category->id ) }}" class="btn btn-sm btn-outline-info">แก้ไข</a>

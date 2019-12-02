@@ -8,15 +8,30 @@ class Categories extends Model
 {
     protected $fillable = ['title','overview','user_id'];
 
-    public function User()
+    // public function User()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
+
+    public function Articles()
     {
-        $this->belongsTo(User::class);
+        return $this->hasMany(Articles::class);
     }
 
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = $value;
-        $this->attributes['slug'] = str_slug($value);
     }
+
+    public function getOverViewHtmlAttribute() {
+        return $this->bodyHtml();
+    }
+
+    private function bodyHtml()
+    {
+        return \Parsedown::instance()->text( $this->overview );
+    }
+
+
 
 }

@@ -6,23 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Articles extends Model
 {
-    protected $fillable = ['title','body'];
+    protected $fillable = ['title','body' ,'categories_id','user_id','view_count','download_count'];
 
     public function User()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id','id');
     }
 
     public function Categories()
     {
-        $this->belongsTo(Categories::class);
+        return $this->belongsTo(Categories::class);
     }
 
-    public function setTitleAttribute($value)
-    {
-        $this->attributes['title'] = $value;
-        $this->attributes['slug'] = str_slug($value);
-    }
 
 
 }
