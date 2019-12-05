@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Articles;
 use App\Categories;
+use App\Uploads;
 use Illuminate\Http\Request;
 
 class ArticlesController extends Controller
@@ -35,17 +36,46 @@ class ArticlesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request , Articles $articles)
+    public function store(Request $request , Articles $articles , Uploads $uploads)
     {
         $request->validate([
             'title' => 'required|max:255',
-            'body' => 'required'
+            'body' => 'required',
+            'filename' => 'required'
         ],[
             'title.required' => 'กรุณากรอกข้อมูล',
             'body.required' => 'กรุณากรอกข้อมูล คำอธิบาย'
         ]);
 
-        $articles->create($request->only('title','body','categories_id')+['user_id'=> \auth::id() ,'view_count' => 0, 'download_count' => 0 ] );
+            // dd($request);
+        $article_id = $articles->create($request->only('title','body','categories_id')+['user_id'=> \auth::id() ,'view_count' => 0, 'download_count' => 0 ] )->id;
+
+        if($request->hasfile('filename'))
+        {
+            // dd($request->file('filename') );
+
+           foreach($request->file('filename') as $file)
+           {
+            //    dd($file);
+               $oldname=$file->getClientOriginalName();
+
+               $filename = date('Y-m-d-H-i-s').'-category_'.$request->categories_id.'-article_'.$article_id.'-'.rand(1,99999).'.'.$file->getClientOriginalExtension();
+            //    dd($filename);
+               $file->move(public_path().'/files/',$filename);
+               $data[] = $filename;
+               $dataOldName[] = $oldname;
+           }
+
+           $file= new Uploads();
+           $file->filename=json_encode($data);
+           $file->pathname = "/files/";
+           $file->oldname = json_encode($dataOldName);
+           $file->newname = json_encode($data);
+           $file->article_id = $article_id;
+
+            $file->save();
+        }
+
         return redirect()->route('categories.show',$request->categories_id)->with('success','เพ่ิมหัวข้อเรียบร้อย');
     }
 
@@ -94,11 +124,14 @@ class ArticlesController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'body' => 'required',
-            'categories_id' => 'required'
+            'categories_id' => 'required',
+            'filename' => 'required',
+            'filename.*' => 'mimes:doc,pdf,docx,zip,png,jpg,gif'
         ],[
             'title.required' => 'กรุณากรอกข้อมูล',
             'body.required' => 'กรุณากรอกข้อมูล รายลเอียด',
-            'categories_id.required' => 'กรุณาเลือกหมวด'
+            'categories_id.required' => 'กรุณาเลือกหมวด',
+            'filename.required' => 'กรุณาใส่ไฟล์ที่ต้องการอัพโหลด'
         ]);
 
         // dd($request);
@@ -133,7 +166,22 @@ class ArticlesController extends Controller
             return  redirect()->route('categories.show',$request->categories_id)->with('danger','เกิดข้อผิดพลาด');
          }
 
+    }
 
+    public function search(Request $request,Articles $articles)
+    {
+
+        $search = $request->get('search');
+        // dd($search);
+        $category = Categories::findOrFail($request->categories_id);
+        $articles = Articles::select()
+                            ->where('title','like','%'.$search.'%')
+                            ->where('categories_id',$request->categories_id)
+                            ->paginate(10);
+        // dd($articles);
+
+        return  view('categories.show',compact('category','articles'))->render();
 
     }
+
 }

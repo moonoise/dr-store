@@ -133,6 +133,7 @@ class CategoriesController extends Controller
         $categories = Categories::select()->where('title','like','%'.$search.'%')->paginate(10);
 
         return view('categories.index',compact('categories','search'))->render();
+
     }
 
 

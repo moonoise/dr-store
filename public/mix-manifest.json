@@ -1,4 +1,10 @@
 {
     "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css"
+    "/css/app.css": "/css/app.css",
+    "/css/fileinput.css": "/css/fileinput.css",
+    "/js/fileinput.min.js": "/js/fileinput.min.js",
+    "/js/popper.min.js": "/js/popper.min.js",
+    "/js/th.js": "/js/th.js",
+    "/js/theme.min.js": "/js/theme.min.js",
+    "/js/jquery.min.js": "/js/jquery.min.js"
 }

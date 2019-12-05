@@ -42,3 +42,6 @@ Route::get('/articles/{article}','ArticlesController@show')->name('articles.show
 
 Route::put('/articles/{article}','ArticlesController@update')->name('articles.update');
 
+Route::get('/search/articles' , 'ArticlesController@search')->name('articles.search');
+
+Route::view('/test', 'test');

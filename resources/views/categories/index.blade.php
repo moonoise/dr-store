@@ -12,9 +12,7 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <h5>หมวดหมู่</h5>
-                        <div class="ml-auto">
-                            <a href="{{ route('categories.create') }}" class="btn btn-sm btn-outline-info">เพิ่มหมวดหมู่</a>
-                        </div>
+
                     </div>
                 </div>
 
@@ -22,6 +20,9 @@
                     <div class="row">
                         <div class="col-6"></div>
                         <div class="col-6">
+                            <div class="float-right">
+                                <a href="{{ route('categories.create') }}" class="btn btn-md btn-outline-info">เพิ่มหมวดหมู่</a>
+                            </div>
                             <div class="float-right">
                                 <form action="{{ route('categories.search') }}" method="get" class="form-inline">
                                     <div class="form-group mr-2 mb-2">
@@ -47,8 +48,9 @@
                                 <tr>
                                     <td scope="row">{{ $categories->firstItem() + $key }}</td>
                                     <td>
-                                    <a class="card-link" href="{{ route('categories.show', $category->id ) }}">
-                                        {{ str_limit($category->title,100,"...") }} </a></td>
+                                        <a class="card-link" href="{{ route('categories.show', $category->id ) }}">
+                                            {{ str_limit($category->title,100,"...") }} </a>
+                                        </td>
                                     <td>
                                         <div class="buttom-float">
                                             <a href="{{ route('categories.edit', $category->id ) }}" class="btn btn-sm btn-outline-info">แก้ไข</a>
@@ -58,7 +60,6 @@
                                                 <button type='submit' class="btn btn-sm btn-outline-danger" onclick="return confirm('คุณต้องการลบจริงๆ หรือใหม่') ">ลบ</button>
                                             </form>
                                         </div>
-
 
                                     </td>
                                 </tr>

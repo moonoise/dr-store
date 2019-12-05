@@ -20,13 +20,13 @@
                         {{ $article->body }}
                     </p>
                     <hr>
-                    <div class="row">
-
-                    </div>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+
+
+

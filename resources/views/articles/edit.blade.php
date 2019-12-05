@@ -15,7 +15,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('articles.update',$article->id) }}" method="post">
+                    <form action="{{ route('articles.update',$article->id) }}" method="post" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="categories_id" value="{{ $article->id }}">
@@ -47,11 +47,62 @@
                                 <div class="alert alert-danger">{{ $message }}</div>
                             @enderror
                         </div>
-                        <button type="submit" class="btn btn-outline-primary">Update</button>
+
+
+                        <div class="input-group control-group increment" >
+                                <input type="file" name="filename[]" class="form-control">
+                                <div class="input-group-btn">
+                                  <button class="btn btn-success" type="button"><i class="fa fa-plus"></i>Add</button>
+                                </div>
+                              </div>
+                              <div class="clone hide">
+                                <div class="control-group input-group" style="margin-top:10px">
+                                  <input type="file" name="filename[]" class="form-control">
+                                  <div class="input-group-btn">
+                                    <button class="btn btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i> Remove</button>
+                                  </div>
+                                </div>
+                              </div>
+                              <br>
+                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save" aria-hidden="true"></i> Update</button>
                     </form>
+
                 </div>
             </div>
         </div>
     </div>
+
+</div>
+
+<div class="for-clone hide d-none d-lg-block">
+    <div class="control-group input-group" style="margin-top:10px">
+        <input type="file" name="filename[]" class="form-control">
+        <div class="input-group-btn">
+        <button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+        </div>
+    </div>
 </div>
 @endsection
+
+<script src="{{ asset('js/jquery.min.js') }}"></script>
+
+<script type="text/javascript">
+
+
+    $(document).ready(function() {
+
+      $(".btn-success").click(function(){
+          var html = $(".for-clone").html();
+          $(".increment").after(html).removeClass("d-none d-lg-block");
+      });
+
+      $("body").on("click",".btn-danger",function(){
+          $(this).parents(".control-group").remove();
+      });
+
+    });
+
+</script>
+
+
+

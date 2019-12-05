@@ -4,8 +4,14 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+
+
 require('./bootstrap');
 require('./fontawesome');
+
+import $ from 'jquery';
+window.$ = window.jQuery = $;
+
 
 window.Vue = require('vue');
 
