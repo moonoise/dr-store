@@ -16,7 +16,7 @@ class ArticlesController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth',['except' => ['index','show','download']]);
+        $this->middleware('auth',['except' => ['index','show','download','search']]);
         $this->sizeUpload = 'max:'.env('MAX_UPLOAD',2048);
     }
 
