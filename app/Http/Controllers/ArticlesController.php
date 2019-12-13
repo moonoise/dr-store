@@ -8,6 +8,7 @@ use App\Uploads;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Config;
 
 class ArticlesController extends Controller
 {
@@ -39,7 +40,8 @@ class ArticlesController extends Controller
 
     public function checkFileSize($files)
     {
-            $allowedfileExtension=['jpeg','jpg','png','docx','doc','pdf','xls','xlsx','zip'];
+            $allowedfileExtension = Config::get('fileupload.allowedfileExtension');
+
             foreach($files as $file){
                 $filename = $file->getClientOriginalName();
                 $extension = $file->getClientOriginalExtension();
@@ -104,7 +106,7 @@ class ArticlesController extends Controller
                 return redirect()->route('categories.show',$request->categories_id)->with('success','เพ่ิมหัวข้อเรียบร้อย');
 
             }else {
-                return redirect()->back()->with('danger' ,'แนบไฟล์ได้เฉพาะนามสกุลที่กำหนด')->withInput();
+                return redirect()->back()->with('danger' ,'แนบไฟล์ได้เฉพาะนามสกุลที่กำหนด '.implode( ", ", Config::get('fileupload.allowedfileExtension') ) )->withInput();
             }
 
         }
