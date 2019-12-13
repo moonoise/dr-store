@@ -12,9 +12,12 @@ use Config;
 
 class ArticlesController extends Controller
 {
+    private $sizeUpload ;
+
     public function __construct()
     {
         $this->middleware('auth',['except' => ['index','show','download']]);
+        $this->sizeUpload = 'max:'.env('MAX_UPLOAD',2048);
     }
 
     /**
@@ -62,18 +65,19 @@ class ArticlesController extends Controller
     {
 
         // dd($request);
+
         $request->validate([
             'title' => 'required|max:255',
             'body' => 'required',
             'filename' => 'required',
-            'filename.*' => 'max:2048'
+            'filename.*' => $this->sizeUpload
         ],[
             'title.required' => 'กรุณากรอกข้อมูล',
             'body.required' => 'กรุณากรอกข้อมูล คำอธิบาย',
             'filename.required' => 'กรุณาแนบไฟล์',
-            'filename.*' => 'ขนาดไฟล์เกินกำหนด'
+            'filename.*' => 'ขนาดไฟล์เกินกำหนด'.$this->sizeUpload
         ]);
-        $article = $articles->create($request->only('title','body','categories_id')+['user_id'=> \auth::id() ] );
+
             // dd($article);
         if($request->hasFile('filename'))
         {
@@ -82,6 +86,7 @@ class ArticlesController extends Controller
 
             if($this->checkFileSize($files)){
 
+                $article = $articles->create($request->only('title','body','categories_id')+['user_id'=> \auth::id() ] );
 
                    foreach($request->file('filename') as $key => $file)
                    {
@@ -161,12 +166,12 @@ class ArticlesController extends Controller
             'title' => 'required|max:255',
             'body' => 'required',
             'categories_id' => 'required',
-            'filename.*' => 'max:2048'
+            'filename.*' => $this->sizeUpload
         ],[
             'title.required' => 'กรุณากรอกข้อมูล',
             'body.required' => 'กรุณากรอกข้อมูล รายลเอียด',
             'categories_id.required' => 'กรุณาเลือกหมวด',
-            'filename.*' => 'ขนาดไฟล์เกินกำหนด'
+            'filename.*' => 'ขนาดไฟล์เกินกำหนด'.$this->sizeUpload
         ]);
         // dd($request->has('file_id'));
          $article = Articles::find($id)->update($request->only('title','body','categories_id'));
