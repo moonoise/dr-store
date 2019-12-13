@@ -14157,3 +14157,48 @@ a.text-dark:focus {
   display: inline;
 }
 
+.download-link {
+  border: 2px dashed #E3E3E3;
+  background-repeat: no-repeat;
+  background-position: 10px 10px;
+  width: auto;
+  height: 80px;
+  display: inline-block;
+  padding: 28px 20px 0 80px;
+  line-height: 1.2em;
+  border-radius: 10px;
+  color: #43494a;
+  font-family: arial, sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+  text-transform: capitalize;
+  box-sizing: border-box;
+  margin: 5px;
+}
+
+.download-link:hover {
+  border: 2px dashed #ADADAD;
+  text-decoration: underline;
+}
+
+.download-orther {
+  background-image: url(/images/download.png?5f77ddfa01c327c26d5d5db843b3f205);
+  background-size: 60px;
+}
+
+.checkbox-link {
+  border: 2px dashed #E3E3E3;
+  width: auto;
+  height: 50px;
+  display: inline-block;
+  padding: 10px 10px 0 40px;
+  line-height: 1.2em;
+  border-radius: 10px;
+  color: #43494a;
+  margin: 5px;
+}
+
+.checkbox-danger {
+  border: 2px dashed #e3342f;
+}
+

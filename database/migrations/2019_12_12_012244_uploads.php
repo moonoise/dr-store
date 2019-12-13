@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUploadsTable extends Migration
+class Uploads extends Migration
 {
     /**
      * Run the migrations.
@@ -15,13 +15,13 @@ class CreateUploadsTable extends Migration
     {
         Schema::create('uploads', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('pathname');
-            $table->string('filename')->unique();
-            $table->string('oldname');
-            $table->string('newname');
-            $table->unsignedBigInteger('article_id');
+            $table->string('path');
+            $table->string('file_name');
+            $table->string('source_name');
+            $table->unsignedBigInteger('articles_id');
             $table->timestamps();
-            $table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
+
+            $table->foreign('articles_id')->references('id')->on('articles')->onDelete('cascade');
 
         });
     }

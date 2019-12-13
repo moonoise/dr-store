@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Articles extends Model
 {
-    protected $fillable = ['title','body' ,'categories_id','user_id','view_count','download_count'];
+    protected $fillable = ['title','body' ,'categories_id','user_id'];
+
+    protected $casts = [
+        'files' => 'json',
+    ];
 
     public function User()
     {
@@ -18,6 +22,8 @@ class Articles extends Model
         return $this->belongsTo(Categories::class);
     }
 
-
-
+    public function Uploads()
+    {
+        return $this->hasMany(Uploads::class);
+    }
 }

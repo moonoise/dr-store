@@ -47,26 +47,54 @@
                                 <div class="alert alert-danger">{{ $message }}</div>
                             @enderror
                         </div>
+                        {{-- {{ dd($article->file_decode) }} --}}
+                        @if ( $uploads )
+                            @forelse ($uploads as $key => $file)
 
+                            @csrf
+                            <div class="col-12">
+                                <div class="form-check mt-2 checkbox-link" >
+                                    <input class="form-check-input check-file" type="checkbox" value="{{ $file->id }}" name='file_id[]' id="file_id_{{ $file->id }}">
+                                    <label class="form-check-label" for="file_id_{{ $file->id }}">
+                                    {{ $file->source_name }}
+                                    </label>
 
+                                </div>
+
+                            </div>
+                            @empty
+
+                            @endforelse
+                        @else
+
+                        @endif
+                        <br>
+                        <br>
                         <div class="input-group control-group increment" >
+                            <input type="file" name="filename[]" class="form-control">
+                            <div class="input-group-btn">
+                                <button class="btn btn-success" type="button"><i class="fa fa-plus"></i>Add</button>
+                            </div>
+                        </div>
+                        <div class="clone hide">
+                            <div class="control-group input-group" style="margin-top:10px">
                                 <input type="file" name="filename[]" class="form-control">
                                 <div class="input-group-btn">
-                                  <button class="btn btn-success" type="button"><i class="fa fa-plus"></i>Add</button>
+                                <button class="btn btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i> Remove</button>
                                 </div>
-                              </div>
-                              <div class="clone hide">
-                                <div class="control-group input-group" style="margin-top:10px">
-                                  <input type="file" name="filename[]" class="form-control">
-                                  <div class="input-group-btn">
-                                    <button class="btn btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i> Remove</button>
-                                  </div>
-                                </div>
-                              </div>
-                              <br>
+                            </div>
+                        </div>
+                        <br>
+
+                        @error('filename')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
+                        @error('filename.*')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                         <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save" aria-hidden="true"></i> Update</button>
                     </form>
-
+                    @include('layouts._messages')
                 </div>
             </div>
         </div>
@@ -74,11 +102,11 @@
 
 </div>
 
-<div class="for-clone hide d-none d-lg-block">
+<div class="for-clone hide invisible">
     <div class="control-group input-group" style="margin-top:10px">
         <input type="file" name="filename[]" class="form-control">
         <div class="input-group-btn">
-        <button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+        <button class="btn btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i> Remove</button>
         </div>
     </div>
 </div>
@@ -88,19 +116,34 @@
 
 <script type="text/javascript">
 
+$(document).ready(function() {
 
-    $(document).ready(function() {
+$(".btn-success").click(function(){
+    var html = $(".for-clone").html();
+    $(".increment").after(html).removeClass("invisible for-clone").addClass("clone");
+});
 
-      $(".btn-success").click(function(){
-          var html = $(".for-clone").html();
-          $(".increment").after(html).removeClass("d-none d-lg-block");
-      });
+$("body").on("click",".btn-danger",function(){
+    $(this).parents(".control-group").remove();
+});
 
-      $("body").on("click",".btn-danger",function(){
-          $(this).parents(".control-group").remove();
-      });
 
-    });
+
+});
+
+
+
+$(document).on("change",".check-file",function () {
+    // console.log($(this).prop('checked'))
+    if ($(this).prop('checked') == true) {
+        $(this).closest(".checkbox-link").addClass('checkbox-danger').append('<span class="badge badge-warning">ลบ</span>');
+
+    }else if($(this).prop('checked') == false){
+
+        $(this).closest(".checkbox-link").removeClass('checkbox-danger').find('.badge').remove();
+    }
+
+});
 
 </script>
 

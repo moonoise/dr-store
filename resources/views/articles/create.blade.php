@@ -52,8 +52,12 @@
                         @error('filename')
                             <div class="alert alert-danger">{{ $message }}</div>
                         @enderror
+                        @error('filename.*')
+                            <div class="alert alert-danger">{{ $message }}</div>
+                        @enderror
                         <button type="submit" class="btn btn-outline-primary">เพิ่ม</button>
                     </form>
+                    @include('layouts._messages')
                 </div>
             </div>
         </div>
@@ -64,7 +68,7 @@
     <div class="control-group input-group" style="margin-top:10px">
         <input type="file" name="filename[]" class="form-control">
         <div class="input-group-btn">
-        <button class="btn btn-danger" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
+        <button class="btn btn-danger" type="button"><i class="fa fa-times" aria-hidden="true"></i> Remove</button>
         </div>
     </div>
 </div>

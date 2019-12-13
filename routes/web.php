@@ -11,13 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/','CategoriesController@index')->name('categories.index');
 
-Auth::routes();
+Auth::routes() ;
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
 
 Route::resource('categories','CategoriesController');
 
@@ -44,4 +42,4 @@ Route::put('/articles/{article}','ArticlesController@update')->name('articles.up
 
 Route::get('/search/articles' , 'ArticlesController@search')->name('articles.search');
 
-Route::view('/test', 'test');
+Route::post('/download','articlesController@download')->name('articles.download');

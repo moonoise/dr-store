@@ -20,9 +20,14 @@
                     <div class="row">
                         <div class="col-6"></div>
                         <div class="col-6">
-                            <div class="float-right">
-                                <a href="{{ route('categories.create') }}" class="btn btn-md btn-outline-info">เพิ่มหมวดหมู่</a>
-                            </div>
+                            @guest
+
+                            @else
+                                <div class="float-right">
+                                    <a href="{{ route('categories.create') }}" class="btn btn-md btn-outline-info">เพิ่มหมวดหมู่</a>
+                                </div>
+                            @endguest
+
                             <div class="float-right">
                                 <form action="{{ route('categories.search') }}" method="get" class="form-inline">
                                     <div class="form-group mr-2 mb-2">
@@ -52,14 +57,18 @@
                                             {{ str_limit($category->title,100,"...") }} </a>
                                         </td>
                                     <td>
-                                        <div class="buttom-float">
-                                            <a href="{{ route('categories.edit', $category->id ) }}" class="btn btn-sm btn-outline-info">แก้ไข</a>
-                                            <form action="{{ route('categories.destroy' , $category->id ) }}" method="post" class="form-delete">
-                                                @method('DELETE')
-                                                @csrf
-                                                <button type='submit' class="btn btn-sm btn-outline-danger" onclick="return confirm('คุณต้องการลบจริงๆ หรือใหม่') ">ลบ</button>
-                                            </form>
-                                        </div>
+                                        @guest
+
+                                        @else
+                                            <div class="buttom-float">
+                                                <a href="{{ route('categories.edit', $category->id ) }}" class="btn btn-sm btn-outline-info">แก้ไข</a>
+                                                <form action="{{ route('categories.destroy' , $category->id ) }}" method="post" class="form-delete">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                    <button type='submit' class="btn btn-sm btn-outline-danger" onclick="return confirm('คุณต้องการลบจริงๆ หรือใหม่') ">ลบ</button>
+                                                </form>
+                                            </div>
+                                        @endguest
 
                                     </td>
                                 </tr>

@@ -34,17 +34,22 @@
                             </div>
                         </div>
                         <div class="col-2">
-                            <div class="float-right">
-                                <div class="form-group">
-                                <form action="{{ route('articles.create') }}" method="get"  class="form-inline">
-                                    <input type="hidden" name="categories_id" value="{{ $category->id }}">
-                                    <button type="submit" class="btn btn-outline-info float-right mr-2 mb-2">เพิ่มรายการ</button>
-                                </form>
+                            @guest
+
+                            @else
+                                <div class="float-right">
+                                    <div class="form-group">
+                                    <form action="{{ route('articles.create') }}" method="get"  class="form-inline">
+                                        <input type="hidden" name="categories_id" value="{{ $category->id }}">
+                                        <button type="submit" class="btn btn-outline-info float-right mr-2 mb-2">เพิ่มรายการ</button>
+                                    </form>
+                                    </div>
                                 </div>
-                            </div>
+                            @endguest
                         </div>
-                        @include('layouts._messages')
+
                         <div class="col-12">
+                            @include('layouts._messages')
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -59,13 +64,18 @@
                                             <td>{{ $articles->firstItem() + $key }}</td>
                                             <td> <a  class="a-test" href="{{ route('articles.show',$article->id ) }}">{{  $article->title }}</a></td>
                                             <td>
-                                                <a href="{{ route('articles.edit', $article->id ) }}" class="btn btn-sm btn-outline-info">แก้ไข</a>
-                                                <form action="{{ route('articles.destroy',$article->id ) }}" method="post" class="form-delete">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <input type="hidden" name="categories_id" value="{{ $category->id }}">
-                                                    <button type='submit' class="btn btn-sm btn-outline-danger" onclick="return confirm('คุณต้องการลบจริงๆ หรือใหม่') ">ลบ</button>
-                                                </form>
+                                                @guest
+
+                                                @else
+                                                    <a href="{{ route('articles.edit', $article->id ) }}" class="btn btn-sm btn-outline-info">แก้ไข</a>
+                                                    <form action="{{ route('articles.destroy',$article->id ) }}" method="post" class="form-delete">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <input type="hidden" name="categories_id" value="{{ $category->id }}">
+                                                        <button type='submit' class="btn btn-sm btn-outline-danger" onclick="return confirm('คุณต้องการลบจริงๆ หรือใหม่') ">ลบ</button>
+                                                    </form>
+                                                @endguest
+
                                             </td>
                                         </tr>
                                     @empty

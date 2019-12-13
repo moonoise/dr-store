@@ -6,9 +6,16 @@ use App\Articles;
 use App\Categories;
 use App\Uploads;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class ArticlesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth',['except' => ['index','show','download']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -30,53 +37,78 @@ class ArticlesController extends Controller
         return view('articles.create',['categories_id' => $id ]);
     }
 
+    public function checkFileSize($files)
+    {
+            $allowedfileExtension=['jpeg','jpg','png','docx','doc','pdf','xls','xlsx','zip'];
+            foreach($files as $file){
+                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $checkExtension[]=in_array($extension,$allowedfileExtension);
+
+            }
+            return !in_array(false,$checkExtension) ;
+
+    }
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request , Articles $articles , Uploads $uploads)
+    public function store(Request $request , Articles $articles,Uploads $uploads)
     {
+
+        // dd($request);
         $request->validate([
             'title' => 'required|max:255',
             'body' => 'required',
-            'filename' => 'required'
+            'filename' => 'required',
+            'filename.*' => 'max:2048'
         ],[
             'title.required' => 'กรุณากรอกข้อมูล',
-            'body.required' => 'กรุณากรอกข้อมูล คำอธิบาย'
+            'body.required' => 'กรุณากรอกข้อมูล คำอธิบาย',
+            'filename.required' => 'กรุณาแนบไฟล์',
+            'filename.*' => 'ขนาดไฟล์เกินกำหนด'
         ]);
-
-            // dd($request);
-        $article_id = $articles->create($request->only('title','body','categories_id')+['user_id'=> \auth::id() ,'view_count' => 0, 'download_count' => 0 ] )->id;
-
-        if($request->hasfile('filename'))
+        $article = $articles->create($request->only('title','body','categories_id')+['user_id'=> \auth::id() ] );
+            // dd($article);
+        if($request->hasFile('filename'))
         {
-            // dd($request->file('filename') );
 
-           foreach($request->file('filename') as $file)
-           {
-            //    dd($file);
-               $oldname=$file->getClientOriginalName();
+            $files = $request->file('filename');
 
-               $filename = date('Y-m-d-H-i-s').'-category_'.$request->categories_id.'-article_'.$article_id.'-'.rand(1,99999).'.'.$file->getClientOriginalExtension();
-            //    dd($filename);
-               $file->move(public_path().'/files/',$filename);
-               $data[] = $filename;
-               $dataOldName[] = $oldname;
-           }
+            if($this->checkFileSize($files)){
 
-           $file= new Uploads();
-           $file->filename=json_encode($data);
-           $file->pathname = "/files/";
-           $file->oldname = json_encode($dataOldName);
-           $file->newname = json_encode($data);
-           $file->article_id = $article_id;
 
-            $file->save();
+                   foreach($request->file('filename') as $key => $file)
+                   {
+                    //    dd($file);
+                       $oldname=$file->getClientOriginalName();
+
+                       $filename = date('Y-m-d_H-i-s').'_category-'.$request->categories_id.'_article-'.$article->id.'_'.rand(1,99999).'.'.$file->getClientOriginalExtension();
+                    //    dd($filename);
+                        $path = $file->storeAs('files',$filename);
+
+                        $article->uploads()->create([
+                            'path' => $path,
+                            'file_name' => $filename,
+                            'source_name' => $oldname,
+                            'articles_id' => $article->id
+                        ]);
+                    }
+                //    dd($data);
+
+
+
+                return redirect()->route('categories.show',$request->categories_id)->with('success','เพ่ิมหัวข้อเรียบร้อย');
+
+            }else {
+                return redirect()->back()->with('danger' ,'แนบไฟล์ได้เฉพาะนามสกุลที่กำหนด')->withInput();
+            }
+
         }
 
-        return redirect()->route('categories.show',$request->categories_id)->with('success','เพ่ิมหัวข้อเรียบร้อย');
     }
 
     /**
@@ -88,10 +120,11 @@ class ArticlesController extends Controller
     public function show($id,Articles $articles,Categories $categories)
     {
         $article = Articles::findOrFail($id);
+        $uploads = $article->Uploads;
         $category = $article->Categories->title;
-        $user = $article->user->only('id','name');
-        // dd($user);
-        return view('articles.show',compact('article','user','category'));
+        $user = $article->User->only('id','name');
+        // dd($article->file_decode);
+        return view('articles.show',compact('article','user','category','uploads'));
     }
 
     /**
@@ -103,13 +136,14 @@ class ArticlesController extends Controller
     public function edit($id, Articles $articles,Categories $categories)
     {
         $article = $articles->find($id);
+        $uploads = $article->uploads;
         $category = $article->Categories;
         $user = $article->User;
 
         $selectCategories = Categories::all('id','title');
 
         // dd($selectCategories);
-        return view('articles.edit',compact('article','category','user','selectCategories'));
+        return view('articles.edit',compact('article','category','user','selectCategories','uploads'));
     }
 
     /**
@@ -119,33 +153,64 @@ class ArticlesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,Articles $articles, $id)
+    public function update(Request $request,Articles $articles, $id,Uploads $uploads)
     {
         $request->validate([
             'title' => 'required|max:255',
             'body' => 'required',
             'categories_id' => 'required',
-            'filename' => 'required',
-            'filename.*' => 'mimes:doc,pdf,docx,zip,png,jpg,gif'
+            'filename.*' => 'max:2048'
         ],[
             'title.required' => 'กรุณากรอกข้อมูล',
             'body.required' => 'กรุณากรอกข้อมูล รายลเอียด',
             'categories_id.required' => 'กรุณาเลือกหมวด',
-            'filename.required' => 'กรุณาใส่ไฟล์ที่ต้องการอัพโหลด'
+            'filename.*' => 'ขนาดไฟล์เกินกำหนด'
         ]);
+        // dd($request->has('file_id'));
+         $article = Articles::find($id)->update($request->only('title','body','categories_id'));
+            // dd($article);
 
-        // dd($request);
-         $article = Articles::find($id);
-        //  dd($article);
-         $article->title = $request->title;
-         $article->body = $request->body;
-         $article->categories_id = $request->categories_id;
-        $check =  $article->save();
-        //  dd($check);
-         if($check){
-            return  redirect()->route('categories.show',$request->categories_id)->with('success','แก้ไขเนื้อหาแล้ว');
+        if ($request->has('file_id')) {
+            foreach ($request->file_id  as $key => $fileId) {
+                // dd($fileId);
+
+                $upload = Uploads::find($fileId);
+                $path = $upload->path;
+                // dd($path);
+                Storage::delete($path);
+                $upload->delete();
+
+             }
+        }
+
+         if($request->hasFile('filename')){
+            $files = $request->file('filename');
+
+            if($this->checkFileSize($files)){
+                foreach($request->file('filename') as $key => $file)
+                {
+                //    dd($file);
+                    $oldname=$file->getClientOriginalName();
+
+                    $filename = date('Y-m-d_H-i-s').'_category-'.$request->categories_id.'_article-'.$id.'_'.rand(1,99999).'.'.$file->getClientOriginalExtension();
+                //    dd($filename);
+                    $path = $file->storeAs('files',$filename);
+
+                    Uploads::create([
+                        'path' => $path,
+                        'file_name' => $filename,
+                        'source_name' => $oldname,
+                        'articles_id' => $id
+                    ]);
+
+                }
+            }
+         }
+
+         if($article){
+            return  redirect()->route('articles.show',$id)->with('success','แก้ไขเนื้อหาแล้ว');
          }else {
-            return  redirect()->route('categories.show',$request->categories_id)->with('danger','เกิดข้อผิดพลาด');
+            return  redirect()->route('articles.show',$id)->with('danger','เกิดข้อผิดพลาด');
          }
 
     }
@@ -156,10 +221,20 @@ class ArticlesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id , Request $request)
+    public function destroy($id , Request $request , Articles $articles)
     {
         // dd($request);
+        $article =  $articles::find($id);
+        $uploads = $article->Uploads;
+
+        if ($uploads != null) {
+            foreach ($uploads as $key => $upload) {
+                Storage::delete($upload->path);
+                $upload->delete();
+            }
+        }
         $check = Articles::destroy($id);
+
         if($check){
             return  redirect()->route('categories.show',$request->categories_id)->with('success','เนื้อหาถูกลบแล้ว');
          }else {
@@ -182,6 +257,16 @@ class ArticlesController extends Controller
 
         return  view('categories.show',compact('category','articles'))->render();
 
+    }
+
+    protected function download(Request $request)
+    {
+        // dd($request);
+        $file = 'app/'.$request->path;
+
+        $path = storage_path($file);
+        // dd($file);
+        return response()->download($path , $request->source_name);
     }
 
 }

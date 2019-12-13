@@ -6,13 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Uploads extends Model
 {
-    protected $fillable = ['pathname','filename','oldname','newname','article_id'];
+    protected $fillable = ['path','file_name','source_name','articles_id'];
 
     public function Articles()
     {
         return $this->belongsTo(Articles::class);
     }
-
-
-
 }
