@@ -10,6 +10,11 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+
+    public function isAdmin(){
+        return $this->type === Auth::user()->role;
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -37,6 +42,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Articles::class);
     }
+
+    protected $guarded = [
+        'role'
+    ];
 
     /**
      * The attributes that should be cast to native types.

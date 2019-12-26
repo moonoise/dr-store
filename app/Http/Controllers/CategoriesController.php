@@ -12,7 +12,8 @@ class CategoriesController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth',['except' => ['index','show','search']]);
+        $this->middleware('admin')->only('edit','update','create','destroy','store');
+        $this->middleware('auth')->only('show','search','index');
     }
 
     /**
@@ -116,13 +117,23 @@ class CategoriesController extends Controller
      * @param  \App\Categories  $categories
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Categories $categories,$id)
+    public function destroy(Categories $categories,$id,Articles $articles)
     {
-        // dd($id);
-       $categories = Categories::findOrFail($id);
-       $categories->delete();
+        // dd($categories);
+        $categories = Categories::findOrFail($id);
+        $articles = $categories->articles;
+        // dd($articles);
+        if ($articles->isEmpty()) {
+            // dd('empty');
+            $categories->delete();
+            return redirect('/categories')->with('success','ลบแล้ว '.$categories->title);
+        }else {
+            return redirect('/categories')->with('danger','ลบไม่ได้ มีเนื้อหาในหมวดนี้ '.$categories->title);
+            // dd('not empty');
+        }
 
-       return redirect('/categories')->with('success','ลบแล้ว'.$id);
+
+
     }
 
     public function search(Request $request,Categories $categories)

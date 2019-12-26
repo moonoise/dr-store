@@ -1,9 +1,4 @@
-@php
-
-    $i = 0;
-@endphp
 @extends('layouts.app')
-
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -11,7 +6,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h5>หมวดหมู่</h5>
+                        <h5>รายชื่อสมาชิก</h5>
 
                     </div>
                 </div>
@@ -20,17 +15,8 @@
                     <div class="row">
                         <div class="col-6"></div>
                         <div class="col-6">
-
-                            @auth
-                                @if (Auth::user()->role === 'admin')
-                                    <div class="float-right">
-                                        <a href="{{ route('categories.create') }}" class="btn btn-md btn-outline-info">เพิ่มหมวดหมู่</a>
-                                    </div>
-                                @endif
-                            @endauth
-
                             <div class="float-right">
-                                <form action="{{ route('categories.search') }}" method="get" class="form-inline">
+                                <form action="{{ route('user.search') }}" method="get" class="form-inline">
                                     <div class="form-group mr-2 mb-2">
                                     <input type="search" name="search" id="search" class="form-control" value="{{ $search ?? "" }}">
                                             <button type="submit" class="btn btn-primary ml-1">Search</button>
@@ -45,45 +31,48 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Categories</th>
+                                <th scope="col">name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Type</th>
                                 <th scope="col">#</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($categories as $key => $category)
+
+                            @forelse ($users as $key => $user)
                                 <tr>
-                                    <td scope="row">{{ $categories->firstItem() + $key }}</td>
-                                    <td>
-                                        <a class="card-link" href="{{ route('categories.show', $category->id ) }}">
-                                            {{ str_limit($category->title,100,"...") }} </a>
-                                        </td>
+                                    <td scope="row">{{ $users->firstItem() + $key }}</td>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>{{ $user->role }}</td>
                                     <td>
                                         @guest
 
                                         @else
                                             @if (Auth::user()->role === 'admin')
-                                                <div class="buttom-float">
-                                                    <a href="{{ route('categories.edit', $category->id ) }}" class="btn btn-sm btn-outline-info">แก้ไข</a>
-                                                    <form action="{{ route('categories.destroy' , $category->id ) }}" method="post" class="form-delete">
-                                                        @method('DELETE')
+                                                <a href="{{ route('user.edit2', $user->id ) }}" class="btn btn-sm btn-outline-info">แก้ไข</a>
+                                                @if (Auth::user()->id != $user->id )
+                                                    <form action="{{ route('user.destroy',$user->id ) }}" method="post" class="form-delete">
                                                         @csrf
+                                                        @method('DELETE')
+                                                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                                        <input type="hidden" name="name" value="{{ $user->name }}">
                                                         <button type='submit' class="btn btn-sm btn-outline-danger" onclick="return confirm('คุณต้องการลบจริงๆ หรือใหม่') ">ลบ</button>
                                                     </form>
-                                                </div>
+                                                @endif
+
                                             @endif
-
                                         @endguest
-
                                     </td>
                                 </tr>
                             @empty
-                            <div class="alert alert-warning"><strong>ยังไม่มีหมวดหมู่</strong> .</div>
+
                             @endforelse
 
                         </tbody>
                     </table>
                  <div class="mx-auto">
-                    {{ $categories->links() }}
+                    {{ $users->links() }}
                 </div>
                 </div>
             </div>

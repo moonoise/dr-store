@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('email')->unique();
+            $table->enum('role', ['member', 'admin'])->default('member');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
@@ -27,6 +28,7 @@ class CreateUsersTable extends Migration
         App\User::create([
             'name' => env('NAME_ROOT','root'),
             'email' => env('EMAIL_ROOT','test@test.com'),
+            'role' => 'admin',
             'email_verified_at' => now(),
             'password' => Hash::make(env('PASS_ROOT','password')), // password
             'remember_token' => Str::random(10),

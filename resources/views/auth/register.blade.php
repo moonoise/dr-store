@@ -70,6 +70,7 @@
                         </div>
                     </form>
                 </div>
+                @include('layouts._messages')
             </div>
         </div>
     </div>

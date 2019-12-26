@@ -67,13 +67,15 @@
                                                 @guest
 
                                                 @else
-                                                    <a href="{{ route('articles.edit', $article->id ) }}" class="btn btn-sm btn-outline-info">แก้ไข</a>
-                                                    <form action="{{ route('articles.destroy',$article->id ) }}" method="post" class="form-delete">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <input type="hidden" name="categories_id" value="{{ $category->id }}">
-                                                        <button type='submit' class="btn btn-sm btn-outline-danger" onclick="return confirm('คุณต้องการลบจริงๆ หรือใหม่') ">ลบ</button>
-                                                    </form>
+                                                    @if (Auth::user()->role === 'admin')
+                                                        <a href="{{ route('articles.edit', $article->id ) }}" class="btn btn-sm btn-outline-info">แก้ไข</a>
+                                                        <form action="{{ route('articles.destroy',$article->id ) }}" method="post" class="form-delete">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <input type="hidden" name="categories_id" value="{{ $category->id }}">
+                                                            <button type='submit' class="btn btn-sm btn-outline-danger" onclick="return confirm('คุณต้องการลบจริงๆ หรือใหม่') ">ลบ</button>
+                                                        </form>
+                                                    @endif
                                                 @endguest
 
                                             </td>
