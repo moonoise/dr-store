@@ -13,7 +13,7 @@ class CategoriesController extends Controller
     public function __construct()
     {
         $this->middleware('admin')->only('edit','update','create','destroy','store');
-        $this->middleware('auth')->only('show','search','index');
+        // $this->middleware('auth')->only('show','search','index');
     }
 
     /**

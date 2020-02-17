@@ -12,14 +12,15 @@ use Config;
 
 class ArticlesController extends Controller
 {
-    private $sizeUpload ;
+    public $sizeUpload ;
 
     public function __construct()
     {
         $this->middleware('admin')->only('edit','update','create','destroy','store');
-        $this->middleware('auth')->only('show','search','download','index');
+        // $this->middleware('auth')->only('show','search','download','index');
 
-        $this->sizeUpload = 'max:'.env('MAX_UPLOAD',2048);
+        $this->sizeUpload = 'max:'.env('MAX_UPLOAD',4096);
+        // $this->sizeUpload = 'max:4096';
     }
 
     /**
@@ -77,7 +78,7 @@ class ArticlesController extends Controller
             'title.required' => 'กรุณากรอกข้อมูล',
             'body.required' => 'กรุณากรอกข้อมูล คำอธิบาย',
             'filename.required' => 'กรุณาแนบไฟล์',
-            'filename.*' => 'ขนาดไฟล์เกินกำหนด'.$this->sizeUpload
+            'filename.*' => 'ขนาดไฟล์เกินกำหนด '.$this->sizeUpload
         ]);
 
             // dd($article);
@@ -274,7 +275,7 @@ class ArticlesController extends Controller
         $file = 'app/'.$request->path;
 
         $path = storage_path($file);
-        // dd($file);
+        // dd($path);
         return response()->download($path , $request->source_name);
     }
 

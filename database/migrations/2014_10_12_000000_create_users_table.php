@@ -27,12 +27,14 @@ class CreateUsersTable extends Migration
 
         App\User::create([
             'name' => env('NAME_ROOT','root'),
-            'email' => env('EMAIL_ROOT','test@test.com'),
-            'role' => 'admin',
+            'email' => env('EMAIL_ROOT','test@ridmail.com'),
             'email_verified_at' => now(),
-            'password' => Hash::make(env('PASS_ROOT','password')), // password
+            'password' => Hash::make(env('PASS_ROOT','1234password')), // password
             'remember_token' => Str::random(10),
         ]);
+
+        App\User::where('email',env('EMAIL_ROOT','test@test.com'))->update(['role' => env('ROLE', 'admin') ]);
+
     }
 
     /**
