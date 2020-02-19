@@ -24,7 +24,7 @@ Route::get('/categories','CategoriesController@index')->name('categories.index')
 Route::get('/articles/{article}','ArticlesController@show')->name('articles.show');
 Route::get('/search/categories','CategoriesController@search')->name('categories.search');
 Route::get('/search/articles' , 'ArticlesController@search')->name('articles.search');
-Route::post('/download','articlesController@download')->name('articles.download');
+Route::post('/download','ArticlesController@download')->name('articles.download');
 
 
 Route::post('categories','CategoriesController@store')->name('categories.store');
