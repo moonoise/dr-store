@@ -23,7 +23,7 @@ class CreateArticlesTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            // $table->foreign('categories_id')->references('id')->on('categories')->onDelete('cascade');  //add ไม่ได้ เพราะ มันสร้าง articles ก่อน categories ให้มองหา column ไม่เจอ
+            $table->foreign('categories_id')->references('id')->on('categories')->onDelete('cascade');  //add ไม่ได้ เพราะ มันสร้าง articles ก่อน categories ให้มองหา column ไม่เจอ
 
         });
     }

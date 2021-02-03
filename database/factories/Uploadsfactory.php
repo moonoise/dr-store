@@ -11,10 +11,10 @@ $factory->define(Uploads::class, function (Faker $faker) {
     // $filename = $faker->image(null,640,480,'cats',false);
     $filename = $faker->firstName();
     return [
-        'pathname' => $pathanme,
-        'filename' => $filename,
-        'oldname' => $filename,
-        'newname' => $filename,
-        'article_id' => App\Articles::pluck('id')->random()
+        'path' => $pathanme,
+        'file_name' => $filename.".png",
+        'source_name' => $filename.".png",
+        'download_count' => rand(0,100),
+        'articles_id' => App\Articles::pluck('id')->random()
     ];
 });

@@ -13,9 +13,9 @@ class AddForeignCategoriesIdToArticlesTable extends Migration
      */
     public function up()
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->foreign('categories_id')->references('id')->on('categories')->onDelete('cascade');
-        });
+        // Schema::table('articles', function (Blueprint $table) {
+        //     $table->foreign('categories_id')->references('id')->on('categories')->onDelete('cascade');
+        // });
     }
 
     /**
