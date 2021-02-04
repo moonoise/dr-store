@@ -15,7 +15,7 @@ class AddFieldUploadsTable extends Migration
     {
         Schema::table('uploads', function (Blueprint $table) {
 
-            $table->integer('download_count');
+            $table->integer('download_count')->nullable();
 
         });
     }

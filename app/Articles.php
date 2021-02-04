@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Articles extends Model
 {
-    protected $fillable = ['title','body' ,'categories_id','user_id'];
+    protected $fillable = ['title','body' ,'categories_id','user_id','view_count'];
 
     protected $casts = [
         'files' => 'json',

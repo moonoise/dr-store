@@ -8,6 +8,7 @@ use App\Uploads;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Config;
 
 class ArticlesController extends Controller
@@ -271,12 +272,14 @@ class ArticlesController extends Controller
 
     protected function download(Request $request)
     {
-        // dd($request);
-        $file = 'app/'.$request->path;
-
-        $path = storage_path($file);
-        // dd($path);
-        return response()->download($path , $request->source_name);
+        try {
+            $file = 'app/'.$request->path;
+            $path = storage_path($file);
+    
+            return response()->download($path , $request->source_name);
+        } catch (\Exception $e) {
+            abort(404);
+        }
     }
 
 }

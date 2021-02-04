@@ -13,6 +13,6 @@ class UploadsTableSeeder extends Seeder
     {
         \DB::table('uploads')->delete();
 
-        factory(App\Uploads::class,10)->create();
+        factory(App\Uploads::class,100)->create();
     }
 }
