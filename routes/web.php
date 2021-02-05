@@ -17,7 +17,6 @@ Route::resource('categories','CategoriesController');
 Route::resource('articles', 'ArticlesController');
 Route::resource('user', 'UserController');
 
-
 // Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/','CategoriesController@index')->name('categories.index');
 Route::get('/categories','CategoriesController@index')->name('categories.index');
@@ -25,7 +24,6 @@ Route::get('/articles/{article}','ArticlesController@show')->name('articles.show
 Route::get('/search/categories','CategoriesController@search')->name('categories.search');
 Route::get('/search/articles' , 'ArticlesController@search')->name('articles.search');
 Route::post('/download','ArticlesController@download')->name('articles.download');
-
 
 Route::post('categories','CategoriesController@store')->name('categories.store');
 Route::get('categories/{category}/edit','CategoriesController@edit')->name('categories.edit');
@@ -43,6 +41,8 @@ Route::put('/user/{user}/edit2','UserController@update2')->name('user.update2');
 Route::get('/search/user','UserController@search')->name('user.search');
 
 
+Route::get('/json/articles/{id}','ArticlesToJsonController@show');
+
 
 Route::group(['prefix' => 'auth'], function () {
 
@@ -52,26 +52,3 @@ Route::group(['prefix' => 'admin'], function () {
 
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

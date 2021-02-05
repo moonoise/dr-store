@@ -110,8 +110,6 @@ class ArticlesController extends Controller
                     }
                 //    dd($data);
 
-
-
                 return redirect()->route('categories.show',$request->categories_id)->with('success','เพ่ิมหัวข้อเรียบร้อย');
 
             }else {
@@ -223,7 +221,6 @@ class ArticlesController extends Controller
          }else {
             return  redirect()->route('articles.show',$id)->with('danger','เกิดข้อผิดพลาด');
          }
-
     }
 
     /**
