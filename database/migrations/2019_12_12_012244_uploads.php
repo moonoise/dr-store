@@ -19,6 +19,7 @@ class Uploads extends Migration
             $table->string('file_name');
             $table->string('source_name');
             $table->unsignedBigInteger('articles_id');
+            $table->integer('download_count')->nullable();
             $table->timestamps();
 
             $table->foreign('articles_id')->references('id')->on('articles')->onDelete('cascade');
